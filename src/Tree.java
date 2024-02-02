@@ -10,18 +10,22 @@ public class Tree {
     int getDepth() {
         return depth;
     }
-    DNode createTree(Node root) {
+    void createTree(Node root) {
+        if(entropy(root) == 0){
+            System.out.println("pure");
+            return ;
+        }
         ArrayList<Integer> trainData = root.trainData;
         float max_IG = -1;
         int selected_IG = -1;
-
         DNode maxIG = null;
 
         for(int i = 0; i < y; i++) {
 
             DNode dNode = setDnode_children(trainData, i);
             dNode.trainData = trainData;
-            System.out.println(iGain(dNode));
+            System.out.println(""+i+": "+iGain(dNode));
+
             if (iGain(dNode) > max_IG){
                 maxIG = dNode;
                 max_IG = iGain(dNode);
@@ -38,12 +42,14 @@ public class Tree {
 //                System.out.println("mat");
 //                createTree(child);
 //            }
-            if( 0 < entropy(child) && entropy(child) < 1){
-//                System.out.println(entropy(child));
+//            System.out.println(i+" : "+ entropy(child));
+            if( 0.0 < entropy(child) ) {
+                if(entropy(child) == 1){
+                    System.out.println(i);
+                }
                 createTree(child);
             }
         }
-        return maxIG;
     }
 
 
@@ -65,6 +71,9 @@ public class Tree {
                 entropy -= p[i] * (Math.log(p[i]) / Math.log(2));
             }
         }
+        if(entropy < 0.0000001){
+            return 0;
+        }
         return entropy;
     }
 
@@ -76,17 +85,20 @@ public class Tree {
             sigma += child.trainData.size() * entropy(child);
         }
         igain -= sigma / dnode.trainData.size();
+        if(igain < 0.0000001){
+            return 0;
+        }
         return igain;
     }
 
     DNode setDnode_children(ArrayList<Integer> trainData, int future_index){
         ArrayList<Node> children = new ArrayList<>();
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 6; i++) {
             children.add(new Node());
         }
 
-        for (int i : trainData){
+        for (int i : trainData){//1   3   5   7
             try {
                 children.get(data[i][future_index]).trainData.add(i);
             }catch (Exception exception){
@@ -97,4 +109,17 @@ public class Tree {
         return new DNode(children, future_index);
     }
 
+    Boolean isPure(Node node){
+        int label = 0;
+        if(node.trainData.size() != 0){
+            label = labels[node.trainData.get(0)];
+        }
+        for (int i = 1; i < node.trainData.size(); i++) {
+            if(label != labels[node.trainData.get(i)]){
+//                System.out.println("pure:"+i);
+                return false;
+            }
+        }
+        return true;
+    }
 }
