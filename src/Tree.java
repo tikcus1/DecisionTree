@@ -1,18 +1,27 @@
 import java.util.ArrayList;
 
+import static java.lang.Math.max;
+
 public class Tree {
 
-    int depth;
-    static int[][] data;
-    static int[] labels;
-    static int x, y;//x: rows_cnt, y: column_cnt
+    int depth = 0;
+    int[][] data;
+    int[] labels;
+    int x, y;//x: rows_cnt, y: column_cnt
 
     int getDepth() {
         return depth;
     }
-    void createTree(Node root, ArrayList<Integer> features) {
-        if(entropy(root) == 0 || features.size() == 0){
-            System.out.println("pure");
+    void createTree(Node root, ArrayList<Integer> features, int deep) {
+        depth = max(depth, deep);
+        if(entropy(root) == 0 || features.isEmpty()){
+            /*if (entropy(root) == 0) {
+                System.out.println("pure");
+            }
+            else {
+                System.out.println("nadarim");
+            }*/
+            //root = new LeafNod
             return;
         }
         ArrayList<Integer> trainData = root.trainData;
@@ -21,9 +30,9 @@ public class Tree {
         DNode maxIG = null;
 
         for(int i = 0; i < features.size(); i++) {
-            DNode dNode = setDnode_children(trainData, i);
+            DNode dNode = setDnode_children(trainData, features.get(i));
             dNode.trainData = trainData;
-            System.out.println(""+i+": "+iGain(dNode));
+            System.out.println(i + ": " + iGain(dNode));
 
             if (iGain(dNode) > max_IG){
                 maxIG = dNode;
@@ -32,9 +41,21 @@ public class Tree {
             }
         }
         System.out.println("max IG : " + max_IG);
-        System.out.println("future index : "+ selected_IG);
+        System.out.println("future index : " + maxIG.future_index);
+
+        /*for (int i = 0; i < features.size(); i++) {
+            System.out.print(features.get(i) + " ");
+        }*/
 
         features.remove(selected_IG);
+
+        /*System.out.println();
+
+        for (int i = 0; i < features.size(); i++) {
+            System.out.print(features.get(i) + " ");
+        }
+        System.out.println();*/
+
         for (int i = 0; i < maxIG.getChildren().size(); i++) {
             Node child = maxIG.getChildren().get(i);
 //            System.out.println(entropy(child));
@@ -43,11 +64,10 @@ public class Tree {
 //                createTree(child);
 //            }
 //            System.out.println(i+" : "+ entropy(child));
-
-            if(entropy(child) == 1){
-                System.out.println(i);
-            }
-            createTree(child, features);
+//            if(entropy(child) == 1){
+//                System.out.println(i);
+//            }
+            createTree(child, features, deep + 1);
         }
     }
 
@@ -93,7 +113,7 @@ public class Tree {
     DNode setDnode_children(ArrayList<Integer> trainData, int future_index){
         ArrayList<Node> children = new ArrayList<>();
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 9; i++) {
             children.add(new Node());
         }
 
