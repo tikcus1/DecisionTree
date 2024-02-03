@@ -9,6 +9,7 @@ public class DNode extends Node{
     }
 
     public DNode() {
+        super();
         children = new ArrayList<>();
         future_index = -1;
     }

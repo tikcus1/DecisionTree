@@ -19,7 +19,18 @@ public class Main {
         int[][] data = readData(8878, 17, "C:\\Users\\alipour\\Desktop\\test_DS\\feature_train.csv");
         int[] label = readLabel(8878, "C:\\Users\\alipour\\Desktop\\test_DS\\label_train.csv");
 
-        Tree tree = new Tree();
+        int[][] data_test = readData(8878, 17, "C:\\Users\\alipour\\Desktop\\test_DS\\feature_test.csv");
+//        int[] label = readLabel(8878, "C:\\Users\\alipour\\Desktop\\test_DS\\label_train.csv");
+
+
+//        int[][] data = {{1,0,1},{0,1,1},{1,1,1},{0,1,1},{1,1,1},{1,0,0},{0,1,0},{0,0,1},{0,0,0}};
+//        int [] label = {1,0,1,0,0,1,0,1,1};
+//        int[] test = new int[]{0,1,0}
+
+        DecisionTreeClassifier decisionTreeClassifier = new DecisionTreeClassifier(data, label);
+        decisionTreeClassifier.predict(data[3], 100);
+
+        /*Tree tree = new Tree();
 
         tree.data = data;
         tree.labels = label;
@@ -41,7 +52,7 @@ public class Main {
         for (int i = 0; i < 17; i++) {
             features.add(i);
         }
-        tree.createTree(root, features, 0);
+        tree.createTree(root, features, 0);*/
     }
     private static int[][] readData(int rows, int cols, String filePathData) throws FileNotFoundException {
         int[][] data = new int[rows][cols];

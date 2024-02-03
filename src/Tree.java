@@ -9,21 +9,32 @@ public class Tree {
     int[] labels;
     int x, y;//x: rows_cnt, y: column_cnt
 
+    public Tree(int[][] data, int[] labels) {
+        this.data = data;
+        this.labels = labels;
+        x = data.length;
+        y = data[0].length;
+    }
+
     int getDepth() {
         return depth;
     }
-    void createTree(Node root, ArrayList<Integer> features, int deep) {
+    Node createTree(DNode root, ArrayList<Integer> features, int deep) {
         depth = max(depth, deep);
-        if(entropy(root) == 0 || features.isEmpty()){
+        if (root.trainData.isEmpty()) {
+            return null;
+        }
+        /*if(entropy(root) == 0 || features.isEmpty()){
             /*if (entropy(root) == 0) {
                 System.out.println("pure");
             }
             else {
                 System.out.println("nadarim");
-            }*/
-            //root = new LeafNod
+            }
+
+            root = new LeafNode(labels[root.trainData.get(0)]);
             return;
-        }
+        }*/
         ArrayList<Integer> trainData = root.trainData;
         float max_IG = -1;
         int selected_IG = -1;
@@ -57,7 +68,17 @@ public class Tree {
         System.out.println();*/
 
         for (int i = 0; i < maxIG.getChildren().size(); i++) {
-            Node child = maxIG.getChildren().get(i);
+            if(maxIG.getChildren().get(i).trainData.size() != 0) {
+                if (entropy(maxIG.getChildren().get(i)) == 0 || features.size() == 1) {
+                    root.getChildren().add(new LeafNode(labels[maxIG.getChildren().get(i).trainData.get(0)]));
+//                return new LeafNode(labels[maxIG.getChildren().get(i).trainData.get(0)]);
+                } else {
+                    DNode child = (DNode) maxIG.getChildren().get(i);
+                    root.getChildren().add(createTree(child, features, deep + 1));
+                }
+            }
+//            Node child = maxIG.getChildren().get(i);
+
 //            System.out.println(entropy(child));
 //            if(entropy(child) - 0.72192806 <= 0.00000001){
 //                System.out.println("mat");
@@ -67,8 +88,11 @@ public class Tree {
 //            if(entropy(child) == 1){
 //                System.out.println(i);
 //            }
-            createTree(child, features, deep + 1);
+
+//            createTree(child, features, deep + 1);
         }
+        root.future_index = selected_IG;
+        return root;
     }
 
 
@@ -114,16 +138,11 @@ public class Tree {
         ArrayList<Node> children = new ArrayList<>();
 
         for (int i = 0; i < 9; i++) {
-            children.add(new Node());
+            children.add(new DNode());
         }
 
         for (int i : trainData){//1   3   5   7
-            try {
-                children.get(data[i][future_index]).trainData.add(i);
-            }catch (Exception exception){
-                children.add(data[i][future_index], new Node());
-                children.get(data[i][future_index]).trainData.add(i);
-            }
+            children.get(data[i][future_index]).trainData.add(i);
         }
         return new DNode(children, future_index);
     }

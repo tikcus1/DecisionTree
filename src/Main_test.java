@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -18,12 +19,12 @@ public class Main_test {
 //            System.out.println(Data[i][0]);
 //        }
 
-        Tree tree = new Tree();
+        Tree tree = new Tree(Data, label);
 
-        tree.data = Data;
+        /*tree.data = Data;
         tree.labels = label;
         tree.x = 9;
-        tree.y = 3;
+        tree.y = 3;*/
 
 
         Node root  = new Node();
@@ -40,7 +41,7 @@ public class Main_test {
         for (int i = 0; i < 3; i++) {
             arrayList.add(i);
         }
-        tree.createTree(root, arrayList, 0);
+//        tree.createTree(root, arrayList, 0);
         System.out.println(tree.getDepth());
     }
 //13 15 20 0 0 1
