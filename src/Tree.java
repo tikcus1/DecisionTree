@@ -10,18 +10,17 @@ public class Tree {
     int getDepth() {
         return depth;
     }
-    void createTree(Node root) {
-        if(entropy(root) == 0){
+    void createTree(Node root, ArrayList<Integer> features) {
+        if(entropy(root) == 0 || features.size() == 0){
             System.out.println("pure");
-            return ;
+            return;
         }
         ArrayList<Integer> trainData = root.trainData;
         float max_IG = -1;
         int selected_IG = -1;
         DNode maxIG = null;
 
-        for(int i = 0; i < y; i++) {
-
+        for(int i = 0; i < features.size(); i++) {
             DNode dNode = setDnode_children(trainData, i);
             dNode.trainData = trainData;
             System.out.println(""+i+": "+iGain(dNode));
@@ -35,6 +34,7 @@ public class Tree {
         System.out.println("max IG : " + max_IG);
         System.out.println("future index : "+ selected_IG);
 
+        features.remove(selected_IG);
         for (int i = 0; i < maxIG.getChildren().size(); i++) {
             Node child = maxIG.getChildren().get(i);
 //            System.out.println(entropy(child));
@@ -43,12 +43,11 @@ public class Tree {
 //                createTree(child);
 //            }
 //            System.out.println(i+" : "+ entropy(child));
-            if( 0.0 < entropy(child) ) {
-                if(entropy(child) == 1){
-                    System.out.println(i);
-                }
-                createTree(child);
+
+            if(entropy(child) == 1){
+                System.out.println(i);
             }
+            createTree(child, features);
         }
     }
 

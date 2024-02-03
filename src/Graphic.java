@@ -13,6 +13,7 @@ public class Graphic extends JPanel {
     public void paintComponent(Graphics g) {
         // Draw Tree Here
         g.drawOval(100, 100, 25, 25);
+
     }
 
     public static void main(String[] args) {
