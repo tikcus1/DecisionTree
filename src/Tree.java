@@ -43,7 +43,7 @@ public class Tree {
         for(int i = 0; i < features.size(); i++) {
             DNode dNode = setDnode_children(trainData, features.get(i));
             dNode.trainData = trainData;
-            System.out.println(i + ": " + iGain(dNode));
+//            System.out.println(i + ": " + iGain(dNode));
 
             if (iGain(dNode) > max_IG){
                 maxIG = dNode;
@@ -51,8 +51,10 @@ public class Tree {
                 selected_IG = i;
             }
         }
-        System.out.println("max IG : " + max_IG);
-        System.out.println("future index : " + maxIG.future_index);
+//        System.out.println("max IG : " + max_IG);
+//        System.out.println("future index : " + maxIG.future_index);
+
+//        System.out.println("maaaaaaaaaat: "+entropy(maxIG.getChildren().get(2)));
 
         /*for (int i = 0; i < features.size(); i++) {
             System.out.print(features.get(i) + " ");
@@ -67,15 +69,37 @@ public class Tree {
         }
         System.out.println();*/
 
+        root.future_index = maxIG.future_index;
         for (int i = 0; i < maxIG.getChildren().size(); i++) {
+//            if(maxIG.getChildren().get(i).trainData.contains(3)){
+//                System.out.println("-->>"+i);
+//            }
+
             if(maxIG.getChildren().get(i).trainData.size() != 0) {
-                if (entropy(maxIG.getChildren().get(i)) == 0 || features.size() == 1) {
+                if (entropy(maxIG.getChildren().get(i)) == 0 || features.size() == 0) {
+//                    if(maxIG.future_index == 16){
+//                        System.out.println("child "+i+ "is Leaf ");
+//                    }
+//                    for (int j = 0; j < maxIG.getChildren().get(i).trainData.size(); j++) {
+//                        System.out.println(maxIG.getChildren().get(i).trainData.get(j));
+//                    }
+//                    System.out.println("zah");
                     root.getChildren().add(new LeafNode(labels[maxIG.getChildren().get(i).trainData.get(0)]));
 //                return new LeafNode(labels[maxIG.getChildren().get(i).trainData.get(0)]);
                 } else {
+//                    if(maxIG.future_index == 16){
+//                        System.out.println("child "+i+ "isDnode ");
+//                    }
+//                    System.out.println(maxIG.future_index+" : "+i+" is Dnode");
                     DNode child = (DNode) maxIG.getChildren().get(i);
-                    root.getChildren().add(createTree(child, features, deep + 1));
+                    ArrayList<Integer> childFeature = new ArrayList<>(features);
+                    root.getChildren().add(createTree(child, childFeature, deep + 1));
                 }
+            }else {
+//                if(maxIG.future_index == 16){
+//                    System.out.println("child "+i+" is empty");
+//                }
+                root.getChildren().add(new LeafNode(0));
             }
 //            Node child = maxIG.getChildren().get(i);
 
@@ -108,15 +132,16 @@ public class Tree {
                 p[i] /= node.trainData.size();
             }
         }
+//        System.out.print(p[0]+" "+p[1]+" "+p[2]);
 
         for (int i = 0; i < 3; i++) {
             if(p[i] != 0){
                 entropy -= p[i] * (Math.log(p[i]) / Math.log(2));
             }
         }
-        if(entropy < 0.0000001){
-            return 0;
-        }
+//        if(entropy < 0.0000001){
+//            return 0;
+//        }
         return entropy;
     }
 
@@ -126,11 +151,12 @@ public class Tree {
         for (int i = 0; i < dnode.getChildren().size() ; i++) {
             Node child = dnode.getChildren().get(i);
             sigma += child.trainData.size() * entropy(child);
+//            System.out.println(i+"-->"+entropy(child));
         }
         igain -= sigma / dnode.trainData.size();
-        if(igain < 0.0000001){
-            return 0;
-        }
+//        if(igain < 0.0000001){
+//            return 0;
+//        }
         return igain;
     }
 

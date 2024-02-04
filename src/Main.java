@@ -16,20 +16,27 @@ public class Main {
 //    public static int[] labels;
 
     public static void main(String[] args) throws FileNotFoundException {
-        int[][] data = readData(8878, 17, "C:\\Users\\alipour\\Desktop\\test_DS\\feature_train.csv");
-        int[] label = readLabel(8878, "C:\\Users\\alipour\\Desktop\\test_DS\\label_train.csv");
+        int[][] data = readData(8878, 17, "C:\\Users\\M A T I N\\Desktop\\ZAHRA\\Data\\feature_train.csv");
+        int[] label = readLabel(8878, "C:\\Users\\M A T I N\\Desktop\\ZAHRA\\Data\\label_train.csv");
 
-        int[][] data_test = readData(8878, 17, "C:\\Users\\alipour\\Desktop\\test_DS\\feature_test.csv");
-//        int[] label = readLabel(8878, "C:\\Users\\alipour\\Desktop\\test_DS\\label_train.csv");
-
+        int[][] data_test = readData(8878, 17, "C:\\Users\\M A T I N\\Desktop\\ZAHRA\\Data\\feature_test.csv");
+        int[] label_test = readLabel(8878, "C:\\Users\\M A T I N\\Desktop\\ZAHRA\\Data\\label_test.csv");
+/*
 
 //        int[][] data = {{1,0,1},{0,1,1},{1,1,1},{0,1,1},{1,1,1},{1,0,0},{0,1,0},{0,0,1},{0,0,0}};
 //        int [] label = {1,0,1,0,0,1,0,1,1};
-//        int[] test = new int[]{0,1,0}
+//        int[] test = new int[]{1,1,1};
 
         DecisionTreeClassifier decisionTreeClassifier = new DecisionTreeClassifier(data, label);
-        decisionTreeClassifier.predict(data[3], 100);
+//        decisionTreeClassifier.predict(data[3], 0);
+//        decisionTreeClassifier.predictAll(data_test, 0);
+        float accuracy = decisionTreeClassifier.accuracy(label, decisionTreeClassifier.predictAll(data, 0));
+        System.out.println(accuracy);
 
+*/
+        DecisionTreeClassifier decisionTreeClassifier = new DecisionTreeClassifier(data, label, data_test, label_test);
+
+//        RandomForest randomForest = new RandomForest(data, label, 4);
         /*Tree tree = new Tree();
 
         tree.data = data;
